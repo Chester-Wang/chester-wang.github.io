@@ -97,6 +97,31 @@
   .player-input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px 16px; font-size: 16px; width: 100%; outline: none; transition: all 0.2s; }
   .player-input:focus { border-color: var(--gold); background: var(--surface2); }
 
+  .import-box {
+    background: var(--bg); border: 1px dashed rgba(201,168,76,0.35);
+    padding: 20px 24px; margin-bottom: 28px;
+  }
+  .import-label {
+    font-family: 'Bebas Neue', sans-serif; font-size: 12px;
+    letter-spacing: 4px; color: var(--gold); margin-bottom: 6px;
+  }
+  .import-hint {
+    font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 12px;
+  }
+  .import-textarea {
+    width: 100%; min-height: 120px; resize: vertical;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); padding: 12px 16px;
+    font-size: 15px; font-family: 'Crimson Pro', serif;
+    outline: none; transition: border-color 0.2s; line-height: 1.8;
+  }
+  .import-textarea:focus { border-color: var(--gold); }
+  .import-textarea::placeholder { color: var(--muted); font-style: italic; }
+  .import-actions { display: flex; gap: 10px; margin-top: 10px; align-items: center; }
+  .import-status { font-size: 13px; font-style: italic; min-height: 18px; flex: 1; }
+  .import-status.ok  { color: var(--win); }
+  .import-status.err { color: var(--loss); }
+
   .privacy-notice { background: rgba(201, 168, 76, 0.04); border: 1px solid rgba(201, 168, 76, 0.2); padding: 24px 30px; margin-bottom: 40px; border-radius: 4px; text-align: center; }
   .privacy-title { font-family: 'Crimson Pro', serif; font-weight: 600; font-size: 17px; color: var(--gold-light); margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; letter-spacing: 1px; }
   .privacy-content { font-size: 15px; color: #c5c4ca; line-height: 1.8; max-width: 720px; margin: 0 auto; font-weight: 400; }
@@ -232,7 +257,7 @@
     <div class="config-row">
       <div class="config-item">
         <label>參賽人數</label>
-        <input type="number" id="cfg-players" class="config-input" value="16" onchange="updateGrid()">
+        <input type="number" id="cfg-players" class="config-input" value="16" min="2" onchange="updateGrid()">
       </div>
       <div class="config-item">
         <label>比賽輪次</label>
@@ -248,6 +273,19 @@
     </div>
     
     <div class="setup-title">▸ 輸入參賽者名單</div>
+
+    <div class="import-box">
+      <div class="import-label">▸ 快速貼上名單</div>
+      <div class="import-hint">每行一個名字，直接從 LINE、記事本貼上即可</div>
+      <textarea class="import-textarea" id="name-paste"
+                placeholder="小宇&#10;小恩&#10;帽子&#10;湯姆&#10;…"></textarea>
+      <div class="import-actions">
+        <div class="import-status" id="import-status"></div>
+        <button class="btn btn-primary btn-small" onclick="importFromText()">填入名單</button>
+        <button class="btn btn-secondary btn-small" onclick="clearImport()">清除</button>
+      </div>
+    </div>
+
     <div class="players-grid" id="players-grid"></div>
 
     <div class="privacy-notice">
@@ -349,7 +387,11 @@ function dismissTimeup() {
 }
 
 function updateGrid() {
-  const n = parseInt(document.getElementById('cfg-players').value) || 0;
+  let n = parseInt(document.getElementById('cfg-players').value) || 2;
+  if (n < 2) {
+    n = 2;
+    document.getElementById('cfg-players').value = 2;
+  }
   const grid = document.getElementById('players-grid');
   grid.innerHTML = '';
   for(let i=0; i<n; i++) {
@@ -362,6 +404,36 @@ function updateGrid() {
   document.getElementById('cfg-rounds').value = Math.ceil(Math.log2(n));
 }
 updateGrid();
+
+function importFromText() {
+  const raw = document.getElementById('name-paste').value;
+  const status = document.getElementById('import-status');
+  // Split by newlines or commas, clean up
+  const names = raw
+    .split(/[\n,、，]+/)
+    .map(n => n.trim())
+    .filter(n => n.length > 0);
+  if (names.length === 0) {
+    status.className = 'import-status err';
+    status.textContent = '請先貼上選手名單。';
+    return;
+  }
+  // Update player count and rebuild grid
+  document.getElementById('cfg-players').value = names.length;
+  updateGrid();
+  names.forEach((name, i) => {
+    const inp = document.getElementById('pi-' + i);
+    if (inp) inp.value = name;
+  });
+  status.className = 'import-status ok';
+  status.textContent = '✓ 已填入 ' + names.length + ' 位選手，可於下方欄位調整後開始比賽。';
+}
+
+function clearImport() {
+  document.getElementById('name-paste').value = '';
+  document.getElementById('import-status').textContent = '';
+  document.getElementById('import-status').className = 'import-status';
+}
 
 function fillSample() {
   const n = parseInt(document.getElementById('cfg-players').value) || 0;
