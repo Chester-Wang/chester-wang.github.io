@@ -123,12 +123,49 @@
   .pct { font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
   .dropped-row { background: #1a0a0a !important; color: #666; opacity: 0.7; }
 
-  footer { margin-top: 100px; padding: 60px 0; text-align: center; border-top: 1px solid var(--border); background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3)); }
-  .credit-text { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 4px; color: var(--text); margin-bottom: 12px; }
-  .credit-text a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,168,76,0.3); transition: all 0.2s; font-weight: 500; }
+  footer {
+    margin-top: 100px;
+    padding: 56px 24px 48px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+    position: relative;
+  }
+  footer::before {
+    content: '';
+    display: block;
+    width: 48px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 36px;
+  }
+  .credit-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 10px; letter-spacing: 6px;
+    color: var(--muted); margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .credit-text {
+    font-family: 'Crimson Pro', serif;
+    font-size: 18px; font-weight: 600;
+    color: var(--text); margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  .credit-text a {
+    color: var(--gold); text-decoration: none;
+    border-bottom: 1px solid rgba(201,168,76,0.35);
+    padding-bottom: 1px;
+    transition: all 0.2s;
+  }
   .credit-text a:hover { color: var(--gold-light); border-bottom-color: var(--gold-light); }
-  .powered-text { font-family: 'Crimson Pro', serif; font-size: 14px; font-style: italic; color: var(--muted); opacity: 0.9; letter-spacing: 1px; font-weight: 400; }
-  .powered-text strong { color: var(--gold-light); font-weight: 600; font-style: normal; }
+  .powered-text {
+    font-family: 'Crimson Pro', serif;
+    font-size: 13px; font-style: italic;
+    color: #4a5568; letter-spacing: 1.5px;
+  }
+  .powered-text strong {
+    color: #6b7280; font-weight: 600;
+    font-style: normal; letter-spacing: 0.5px;
+  }
 
   .tournament { display: none; }
   .round-section { margin-bottom: 50px; }
@@ -232,11 +269,12 @@
   </div>
 
   <footer>
+    <div class="credit-label">Created By</div>
     <div class="credit-text">
-      Created by <a href="https://www.instagram.com/yu__03.07/" target="_blank">小宇（＠yu__03.07）</a>
+      <a href="https://www.threads.com/@yu__03.07" target="_blank">小宇（＠yu__03.07）</a>
     </div>
     <div class="powered-text">
-      Powered By <strong>Claude Sonnet 4.6</strong>、<strong>Gemini 3 Flash</strong>（Vibe Coding）
+      Powered By <strong>Claude Sonnet 4.6</strong> &amp; <strong>Gemini 2.0 Flash</strong>　·　Vibe Coding
     </div>
   </footer>
 </div>
